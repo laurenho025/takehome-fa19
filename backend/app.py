@@ -55,7 +55,7 @@ def mirror(name):
 def get_all_contacts():
     return create_response({"contacts": db.get('contacts')})
 
-@app.route("/shows/<id>", methods=['DELETE'])
+@app.route("/contacts/<id>", methods=['DELETE'])
 def delete_show(id):
     if db.getById('contacts', int(id)) is None:
         return create_response(status=404, message="No contact with this id exists")
@@ -64,6 +64,12 @@ def delete_show(id):
 
 
 # TODO: Implement the rest of the API here!
+# Endpoint for GET /contacts/<id>
+@app.route("/contacts/<id>", methods=['GET'])
+def get_contact(id):
+    if db.getById('contacts', int(id)) is None:
+        return create_response(status=404, message="No contact with this id exists")
+    return create_response(db.getById('contacts', int(id)))
 
 """
 ~~~~~~~~~~~~ END API ~~~~~~~~~~~~
