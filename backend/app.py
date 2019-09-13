@@ -53,7 +53,19 @@ def mirror(name):
 
 @app.route("/contacts", methods=['GET'])
 def get_all_contacts():
-    return create_response({"contacts": db.get('contacts')})
+    # If a hobby is provided, return contacts with that hobby, otherwise return all contacts
+    # If no such contacts exist, return a 404 with a message
+    if 'hobby' in request.args:
+        target_hobby = request.args.get('hobby')
+        contacts_with_hobby = []
+        for x in db.get('contacts'):
+            if x['hobby'] == target_hobby:
+                contacts_with_hobby.append(x)
+        if len(contacts_with_hobby) == 0:
+            return create_response(status=404, message="No contact with this hobby exists")
+        return create_response({"contacts": contacts_with_hobby})
+    else:
+        return create_response({"contacts": db.get('contacts')})
 
 @app.route("/contacts/<id>", methods=['DELETE'])
 def delete_show(id):
@@ -64,7 +76,7 @@ def delete_show(id):
 
 
 # TODO: Implement the rest of the API here!
-# Endpoint for GET /contacts/<id>
+
 @app.route("/contacts/<id>", methods=['GET'])
 def get_contact(id):
     if db.getById('contacts', int(id)) is None:
