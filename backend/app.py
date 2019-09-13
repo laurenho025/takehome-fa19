@@ -83,6 +83,19 @@ def get_contact(id):
         return create_response(status=404, message="No contact with this id exists")
     return create_response(db.getById('contacts', int(id)))
 
+@app.route("/contacts", methods=['POST'])
+def add_contact():
+    name = request.get_json()['name']
+    nickname = request.get_json()['nickname']
+    hobby = request.get_json()['hobby']
+
+    # Check that all three parameters are provided/not empty strings
+    if name == "" or nickname == "" or hobby == "":
+        return create_response(status=422, message="Provide the contact's name, nickname, and hobby that you want to create")
+
+    data = {"name": name, "nickname": nickname, "hobby": hobby} 
+    return create_response(db.create('contacts', data), status=201)
+    
 """
 ~~~~~~~~~~~~ END API ~~~~~~~~~~~~
 """
