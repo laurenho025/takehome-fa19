@@ -89,13 +89,31 @@ def add_contact():
     nickname = request.get_json()['nickname']
     hobby = request.get_json()['hobby']
 
-    # Check that all three parameters are provided/not empty strings
+    # Check that all three parameters are provided (not empty strings)
     if name == "" or nickname == "" or hobby == "":
         return create_response(status=422, message="Provide the contact's name, nickname, and hobby that you want to create")
 
     data = {"name": name, "nickname": nickname, "hobby": hobby} 
     return create_response(db.create('contacts', data), status=201)
     
+@app.route("/contacts/<id>", methods=['PUT'])
+def put_contact(id):
+    if db.getById('contacts', int(id)) is None:
+        return create_response(status=404, message="No contact with this id exists")
+
+    updated_name = request.get_json()['name']
+    updated_hobby = request.get_json()['hobby']
+    # Check which parameter(s) should be updated, then update with the new name/hobby
+    if updated_name != "" and updated_hobby != "":
+        db.updateById('contacts', int(id), {"name": updated_name, "hobby": updated_hobby})
+    elif updated_name != "" and updated_hobby == "":
+        db.updateById('contacts', int(id), {"name": updated_name})    
+    else:
+        db.updateById('contacts', int(id), {"hobby": updated_hobby}) 
+
+    return create_response(db.getById('contacts', int(id)))   
+
+
 """
 ~~~~~~~~~~~~ END API ~~~~~~~~~~~~
 """
