@@ -1,11 +1,20 @@
 import React, { Component } from 'react'
 
 class App extends Component {
-  // YOUR CODE GOES BELOW
+  constructor(props) {
+    super(props)
+    this.state = {
+      id: this.props.id,
+      name: this.props.name,
+      hobby: this.props.hobby,
+    }
+  }
   
   render() {
     return (
-      <div/> 
+      <div>
+        <p>Name: {this.state.name}</p>
+      </div>
     )
   }
 }
